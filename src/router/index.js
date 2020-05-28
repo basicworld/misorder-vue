@@ -49,28 +49,28 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
+      name: '首页',
       component: () => import('@/views/dashboard/index'),
       meta: { title: '首页', icon: 'dashboard' }
     }]
   },
   {
-    path: '/newticket',
+    path: '/neworder',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: '新建工单',
-        component: () => import('@/views/newticket/index'),
-        meta: { title: '新建工单', icon: 'form' }
+        name: '创建工单',
+        component: () => import('@/views/neworder/index'),
+        meta: { title: '创建工单', icon: 'form' }
       }
     ]
   },
 
   {
-    path: '/mytickets',
+    path: '/myorders',
     component: Layout,
-    redirect: '/mytickets/history',
+    redirect: '/myorders/history',
     name: '我的工单',
     meta: {
       title: '我的工单',
@@ -80,44 +80,44 @@ export const constantRoutes = [
       {
         path: 'history',
         name: '工单记录',
-        component: () => import('@/views/mytickets/index'),
+        component: () => import('@/views/myorders/index'),
         meta: { title: '工单记录', icon: 'form' }
       },
       {
         path: 'draft',
         name: '草稿箱',
-        component: () => import('@/views/mytickets/index'),
+        component: () => import('@/views/myorders/index'),
         meta: { title: '草稿箱', icon: 'form' }
       },
       {
         path: 'trash',
         name: '垃圾篓',
-        component: () => import('@/views/mytickets/index'),
+        component: () => import('@/views/myorders/index'),
         meta: { title: '垃圾篓', icon: 'form' }
       }
     ]
   },
   {
-    path: '/ticketsquare',
+    path: '/reception',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: '工单广场',
-        component: () => import('@/views/ticketsquare/index'),
-        meta: { title: '工单广场', icon: 'form' }
+        name: '派单中心',
+        component: () => import('@/views/reception/index'),
+        meta: { title: '派单中心', icon: 'form' }
       }
     ]
   },
   {
-    path: '/workspace',
+    path: '/process',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: '工作台',
-        component: () => import('@/views/workspace/index'),
-        meta: { title: '工作台', icon: 'form' }
+        name: '受理中心',
+        component: () => import('@/views/process/index'),
+        meta: { title: '受理中心', icon: 'form' }
       }
     ]
   },
@@ -138,113 +138,56 @@ export const constantRoutes = [
         meta: { title: '用户管理', icon: 'form' }
       },
       {
-        path: 'deptment',
+        path: 'dept',
         name: '部门管理',
-        component: () => import('@/views/system/deptment/index'),
+        component: () => import('@/views/system/dept/index'),
         meta: { title: '部门管理', icon: 'form' }
-      }
-    ]
-  },
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        path: 'dict',
+        name: '字典管理',
+        component: () => import('@/views/system/dict/index'),
+        meta: { title: '字典管理', icon: 'form' }
       }
     ]
   },
-
   {
-    path: '/form',
+    path: '/ordersetting',
     component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
-
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
+    redirect: '/ordersetting/ordertype',
+    name: '工单配置',
     meta: {
-      title: 'Nested',
+      title: '工单配置',
       icon: 'nested'
     },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
+        path: 'ordertype',
+        name: '工单类型',
+        component: () => import('@/views/ordersetting/ordertype/index'),
+        meta: { title: '工单类型', icon: 'form' },
         children: [
           {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
+            path: 'subtype',
+            name: '工单子类型',
+            hidden: true,
+            component: () => import('@/views/ordersetting/ordertype/subtype'),
+            meta: { title: '工单子类型', icon: 'form' }
           }
         ]
       },
-      {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
-      }
-    ]
-  },
 
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        path: 'orderstate',
+        name: '工单状态',
+        component: () => import('@/views/ordersetting/orderstate/index'),
+        meta: { title: '工单状态', icon: 'form' }
+      },
+      {
+        path: 'statetransfer',
+        name: '状态转移',
+        component: () => import('@/views/ordersetting/statetransfer/index'),
+        meta: { title: '状态转移', icon: 'form' }
       }
     ]
   },
