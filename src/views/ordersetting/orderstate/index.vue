@@ -24,8 +24,8 @@
     <div>
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
         <el-table-column prop="id" label="序号" />
-        <el-table-column prop="name" label="当前状态" />
-        <el-table-column prop="key" label="状态类型" />
+        <el-table-column prop="name" label="状态名称" />
+        <el-table-column prop="key" label="状态关键字" />
         <el-table-column prop="detail" label="状态描述" />
         <el-table-column label="操作" width="200">
           <template slot-scope="scope">
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { getOrderStateListAPI, deleteOrderStateAPI, insertOrderStateAPI, updateOrderStateAPI } from '@/api/orderstate'
+import { getOrderStateListAPI, deleteOrderStateAPI, addOrderStateAPI, updateOrderStateAPI } from '@/api/orderstate'
 export default {
   data() {
     return {
@@ -98,7 +98,7 @@ export default {
           { min: 1, max: 20, message: '长度不超过 20 个字符', trigger: 'blur' }
         ],
         key: [
-          { required: true, message: '请输入工单状态类型，英文无空格，示例：staff、solving', trigger: 'blur' },
+          { required: true, message: '请输入工单状态关键字，英文无空格，示例：stt_draft、stt_solving', trigger: 'blur' },
           { min: 1, max: 20, message: '长度不超过 20 个字符', trigger: 'blur' }
         ]
 
@@ -137,13 +137,15 @@ export default {
       // 清空表单
       this.dialogFormData = Object.assign({}, this.defaultdialogFormData)
 
-      // 设置对话框名字和类型
-      this.dialogFormData.dialogName = '新增工单类型'
+      // 设置对话框名字和状态
+      this.dialogFormData.dialogName = '新增工单状态'
       this.dialogFormData.dialogType = 'add'
       // 显示表单
       this.dialogFormVisible = true
       // 清除表单校验
-      this.$refs['dialogForm'].clearValidate()
+      this.$nextTick(() => {
+        this.$refs['dialogForm'].clearValidate()
+      })
     },
     // 保存item
     doSave() {
@@ -171,7 +173,7 @@ export default {
             }).catch(() => { console.log('error') })
           } else if (this.dialogFormData.dialogType === 'add') {
             // 新增
-            insertOrderStateAPI(reqData).then(res => {
+            addOrderStateAPI(reqData).then(res => {
               if (res.code === 20000) {
                 this.$message({ type: 'success', message: '新增成功!' })
                 this.dialogFormVisible = false
@@ -189,13 +191,15 @@ export default {
     handleDetail(row) {
       // 清空表单
       this.dialogFormData = Object.assign({}, row)
-      // 设置对话框名字和类型
-      this.dialogFormData.dialogName = '工单类型详情'
+      // 设置对话框名字和状态
+      this.dialogFormData.dialogName = '工单状态详情'
       this.dialogFormData.dialogType = 'edit'
       // 显示表单
       this.dialogFormVisible = true
       // 清除表单校验
-      this.$refs['dialogForm'].clearValidate()
+      this.$nextTick(() => {
+        this.$refs['dialogForm'].clearValidate()
+      })
     },
     // 删除单行数据
     handleDelete(row) {
