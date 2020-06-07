@@ -4,8 +4,15 @@
 
     <div>
       <el-form :inline="true" :model="queryFormData" class="demo-form-inline">
-        <el-form-item label="类型名称">
-          <el-input v-model="queryFormData.sname" placeholder="请输入关键字" size="small" />
+        <el-form-item label="一级工单类型">
+          <el-select v-model="queryFormData.parent_skey" size="small" placeholder="请选择">
+            <el-option
+              v-for="state in orderTypeList"
+              :key="state.skey"
+              :label="state.sname"
+              :value="state.skey"
+            />
+          </el-select>
         </el-form-item>
 
         <el-form-item>
@@ -14,8 +21,8 @@
         <el-form-item>
           <el-button size="small" @click="doReset">重置</el-button>
         </el-form-item>
-        <el-form-item>
-          <el-button size="small" @click="handleAddClick">新增</el-button>
+        <el-form-item v-if="queryFormData.parent_skey!==undefined">
+          <el-button size="small" @click="handleAddClick">新增二级工单类型</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -24,23 +31,23 @@
     <div>
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
         <el-table-column prop="id" label="序号" />
-        <el-table-column prop="sname" label="一级类型名称" />
-        <el-table-column prop="skey" label="一级类型关键字" />
+        <el-table-column prop="sname" label="二级类型名称" />
+        <el-table-column prop="skey" label="二级类型关键字" />
         <el-table-column prop="type_order" label="排序" />
         <el-table-column prop="detail" label="描述" />
         <el-table-column label="操作" width="200">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="showSubTypePage(scope.row)">二级类型管理</el-button>
-
-            <el-button type="text" size="small" @click="handleDetail(scope.row)">详情</el-button>
             <el-button type="text" size="small" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <!-- 一级工单类型新增/详情对话框 -->
+    <!-- 二级工单类型新增/详情对话框 -->
     <el-dialog :title="dialogFormData.dialogName" :visible.sync="dialogFormVisible">
       <el-form ref="dialogForm" :model="dialogFormData" :rules="rules">
+        <el-form-item label="一级工单类型名称" :label-width="formLabelWidth" prop="sname">
+          <el-input v-model="dialogFormData.parent_skey" size="small" autocomplete="off" disabled />
+        </el-form-item>
         <el-form-item label="类型名称" :label-width="formLabelWidth" prop="sname">
           <el-input v-model="dialogFormData.sname" size="small" autocomplete="off" />
         </el-form-item>
@@ -63,7 +70,7 @@
 </template>
 
 <script>
-import { getOrderTypeListAPI, deleteOrderTypeAPI, addOrderTypeAPI, updateOrderTypeAPI } from '@/api/ordertype'
+import { getOrderTypeListAPI, deleteOrderSubTypeAPI, addOrderSubTypeAPI, getOrderSubTypeListAPI } from '@/api/ordertype'
 export default {
   data() {
     return {
@@ -71,10 +78,10 @@ export default {
       loading: true,
       // 查询条件
       queryFormData: {
-        name: ''
+        parent_skey: ''
       },
-      // stateListData 一级工单状态列表
-      stateListData: [
+      // orderTypeList 一级工单状态列表
+      orderTypeList: [
         { skey: 'a', sname: 'aa' }
       ],
       // 查询结果
@@ -108,11 +115,11 @@ export default {
       // 表单验证
       rules: {
         sname: [
-          { required: true, message: '请输入工单类型名称，示例：草稿、处理中', trigger: 'blur' },
+          { required: true, message: '请输入二级工单类型名称，示例：草稿、处理中', trigger: 'blur' },
           { min: 1, max: 20, message: '长度不超过 20 个字符', trigger: 'blur' }
         ],
         skey: [
-          { required: true, message: '请输入工单类型KEY，英文无空格，示例：stt_draft、stt_solving', trigger: 'blur' },
+          { required: true, message: '请输入二级工单类型关键字，英文无空格，示例：stt_draft、stt_solving', trigger: 'blur' },
           { min: 1, max: 20, message: '长度不超过 20 个字符', trigger: 'blur' }
         ],
         type_order: [
@@ -131,15 +138,17 @@ export default {
   },
   created() {
     // 初始化数据
+    this.initFirstLevelOrderType()
+    this.initOrderSubType()
     this.doQuery()
   },
   methods: {
-    // 查询列表
+    // 查询二级工单类型列表
     doQuery() {
       console.log('doQuery!')
       var reqData = {} // 请求参数
-      reqData.sname = this.queryFormData.sname
-      getOrderTypeListAPI(reqData).then(res => {
+      reqData.parent_skey = this.queryFormData.parent_skey
+      getOrderSubTypeListAPI(reqData).then(res => {
         if (res.code === 20000) {
           this.tableData = res.data.items
           this.loading = false
@@ -147,6 +156,32 @@ export default {
       }).catch(() => {
         console.log('error')
       })
+    },
+    // 查询一级工单类型列表
+    initFirstLevelOrderType() {
+      console.log('initFirstLevelOrderType!')
+      var reqData = {} // 请求参数为空，此处查询所有一级items
+      getOrderTypeListAPI(reqData).then(res => {
+        if (res.code === 20000) {
+          this.orderTypeList = res.data.items
+        }
+      }).catch(() => {
+        console.log('error')
+      })
+    },
+    // 初始化一级工单类型的默认选项
+    initOrderSubType() {
+      if (this.orderTypeList.length > 0) {
+        if (this.$route.params.skey !== undefined && this.$route.params.skey !== ':skey') {
+          this.queryFormData.parent_skey = this.$route.params.skey
+        } else {
+          this.queryFormData.parent_skey = undefined
+        }
+        this.loading = false
+      } else {
+        this.queryFormData.parent_skey = undefined
+        this.loading = false
+      }
     },
     // 重置查询条件
     doReset() {
@@ -162,8 +197,10 @@ export default {
       this.dialogFormData = Object.assign({}, this.defaultdialogFormData)
 
       // 设置对话框名字和状态
-      this.dialogFormData.dialogName = '新增工单类型'
+      this.dialogFormData.dialogName = '新增二级工单类型'
       this.dialogFormData.dialogType = 'add'
+      // 设置一级工单类型
+      this.dialogFormData.parent_skey = this.queryFormData.parent_skey
       // 显示表单
       this.dialogFormVisible = true
       // 清除表单校验
@@ -185,19 +222,9 @@ export default {
           reqData.skey = this.dialogFormData.skey
           reqData.detail = this.dialogFormData.detail
           // 请求
-          if (this.dialogFormData.dialogType === 'edit') {
-            // 更新
-            reqData.id = this.dialogFormData.id
-            updateOrderTypeAPI(reqData).then(res => {
-              if (res.code === 20000) {
-                this.$message({ type: 'success', message: '更新成功!' })
-                this.dialogFormVisible = false
-                this.doQuery()
-              }
-            }).catch(() => { console.log('error') })
-          } else if (this.dialogFormData.dialogType === 'add') {
+          if (this.dialogFormData.dialogType === 'add') {
             // 新增
-            addOrderTypeAPI(reqData).then(res => {
+            addOrderSubTypeAPI(reqData).then(res => {
               if (res.code === 20000) {
                 this.$message({ type: 'success', message: '新增成功!' })
                 this.dialogFormVisible = false
@@ -211,25 +238,6 @@ export default {
         }
       })
     },
-    // 查看单行数据
-    handleDetail(row) {
-      // 清空表单
-      this.dialogFormData = Object.assign({}, row)
-      // 设置对话框名字和状态
-      this.dialogFormData.dialogName = '工单类型详情'
-      this.dialogFormData.dialogType = 'edit'
-      // 显示表单
-      this.dialogFormVisible = true
-      // 清除表单校验
-      this.$nextTick(() => {
-        this.$refs['dialogForm'].clearValidate()
-      })
-    },
-    // 打开二级工单类型对话框
-    showSubTypePage(row) {
-      console.log('showSubTypePage!')
-      this.$router.push({ path: '/ordersetting/ordersubtype/skey/' + row.skey })
-    },
     // 删除单行数据
     handleDelete(row) {
       this.$confirm('删除不可恢复, 是否继续?', '提示', {
@@ -239,7 +247,7 @@ export default {
       }).then(() => {
         var reqData = {} // 请求参数
         reqData.id = row.id
-        deleteOrderTypeAPI(reqData).then(res => {
+        deleteOrderSubTypeAPI(reqData).then(res => {
           if (res.code === 20000) {
             this.$message({ type: 'success', message: '删除成功!' })
           }

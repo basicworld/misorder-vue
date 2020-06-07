@@ -31,3 +31,27 @@ export function updateOrderTypeAPI(data) {
     data
   })
 }
+// 获取二级工单类型列表
+export function getOrderSubTypeListAPI(data) {
+  return request({
+    url: '/work-order/ordersubtype/list',
+    method: 'post',
+    data
+  })
+}
+// 删除二级工单类型
+export function deleteOrderSubTypeAPI(data) {
+  return request({
+    url: '/work-order/ordersubtype/delete',
+    method: 'post',
+    data
+  })
+}
+// 新增二级工单类型
+export function addOrderSubTypeAPI(data) {
+  return request({
+    url: '/work-order/ordersubtype/insert',
+    method: 'post',
+    data
+  })
+}

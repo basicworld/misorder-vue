@@ -165,16 +165,16 @@ export const constantRoutes = [
         path: 'ordertype',
         name: '工单类型',
         component: () => import('@/views/ordersetting/ordertype/index'),
-        meta: { title: '工单类型', icon: 'form' },
-        children: [
-          {
-            path: 'subtype',
-            name: '工单子类型',
-            hidden: true,
-            component: () => import('@/views/ordersetting/ordertype/subtype'),
-            meta: { title: '工单子类型', icon: 'form' }
-          }
-        ]
+        meta: { title: '工单类型', icon: 'form' }
+
+      },
+      {
+        path: 'ordersubtype/skey/:skey',
+        name: '二级工单类型',
+        hidden: true,
+        component: () => import('@/views/ordersetting/ordersubtype/index'),
+        meta: { title: '二级工单类型', icon: 'form' }
+
       },
 
       {
