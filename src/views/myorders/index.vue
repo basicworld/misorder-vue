@@ -7,10 +7,10 @@
         <el-row>
 
           <el-form-item label="工单编号">
-            <el-input v-model="queryFormData.name" placeholder="请输入" size="small" style="width: 200px;" />
+            <el-input v-model="queryFormData.name" placeholder="请输入" size="small" style="width: 180px;" />
           </el-form-item>
           <el-form-item label="工单标题">
-            <el-input v-model="queryFormData.name" placeholder="请输入" size="small" style="width: 200px;" />
+            <el-input v-model="queryFormData.name" placeholder="请输入" size="small" style="width: 180px;" />
           </el-form-item>
           <el-form-item label="创建时间">
             <el-date-picker
@@ -25,12 +25,13 @@
               :picker-options="pickerOptions"
               format="yyyy-MM-dd"
               value-format="yyyy-MM-dd"
+              style="width: 300px;"
             />
           </el-form-item>
         </el-row>
         <el-row>
           <el-form-item label="紧急程度">
-            <el-select v-model="queryFormData.urgent" size="small" placeholder="请选择">
+            <el-select v-model="queryFormData.urgent" size="small" placeholder="请选择" style="width: 180px;">
               <el-option
                 v-for="item in urgentList"
                 :key="item.skey"
@@ -40,7 +41,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="处理状态">
-            <el-select v-model="queryFormData.state_key" size="small" placeholder="请选择">
+            <el-select v-model="queryFormData.state_key" size="small" placeholder="请选择" style="width: 180px;">
               <el-option
                 v-for="item in orderStateList"
                 :key="item.key"
