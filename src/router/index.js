@@ -191,6 +191,25 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/orderutil',
+    component: Layout,
+    redirect: '/orderutil/OrderDetail',
+    name: '公共组件',
+    meta: {
+      title: '公共组件',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'OrderDetail',
+        name: '工单详情',
+        component: () => import('@/views/orderutil/OrderDetail'),
+        meta: { title: '工单详情', icon: 'form' }
+
+      }
+    ]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
